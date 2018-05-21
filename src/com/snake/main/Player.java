@@ -10,28 +10,35 @@ public class Player extends GameObject {
 	Random r = new Random();
 	Handler handler;
 	HUD hud;
+	static int moveCounter = 0;
 	
 	public Player(float x, float y, ID id, Handler handler, HUD hud) {
 		super(x, y, id);
 		this.handler = handler;
 		this.hud = hud;
+		dirX = 1;
 	}
 
 	public Rectangle getBounds() {
-		return new Rectangle((int)x, (int)y, 32, 32);
+		return new Rectangle((int)x, (int)y, (int)Game.BLOCK, (int)Game.BLOCK);
 	}
 
 	public void tick() {
+		moveCounter++;
 		
-		x += velX;
-		y += velY;
-		
-		
-		
-		x = Game.clamp(x, 0, Game.HEIGHT - 32);
-		y = Game.clamp(y, 0, Game.HEIGHT - 68);
+		if(moveCounter == 8) {
+			x += dirX * Game.BLOCK;
+			y += dirY * Game.BLOCK;
+			setMoveDoneX(true);
+			setMoveDoneY(true);
+			moveCounter %= 8;
+		}
 
-		//handler.addObject(new Trail(x, y, ID.Trail, Color.blue, 32, 32, 0.08f, handler));
+		
+		
+		x = Game.clamp(x, Game.MIN_XY, Game.MAX_XY - Game.BLOCK);
+		y = Game.clamp(y, Game.MIN_XY, Game.MAX_XY - Game.BLOCK);
+
 		
 		collision();
 	}
@@ -46,7 +53,7 @@ public class Player extends GameObject {
 					hud.setNextPerk(hud.getNextPerk() + 20);
 					hud.setScore(hud.getScore() + 1);
 					handler.removeObject(tempObject);
-					handler.addObject(new Food(r.nextInt(Game.HEIGHT - 32), r.nextInt(Game.HEIGHT - 50), ID.Food));
+					handler.addObject(new Food(Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, ID.Food));
 				}
 			}
 		}
@@ -55,7 +62,7 @@ public class Player extends GameObject {
 	
 	public void render(Graphics g) {
 		g.setColor(Color.blue);
-		g.fillRect((int)x, (int)y, 32, 32);
+		g.fillRect((int)x, (int)y, (int)Game.BLOCK, (int)Game.BLOCK);
 	}
 	
 

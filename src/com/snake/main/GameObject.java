@@ -7,7 +7,8 @@ public abstract class GameObject {
 
 	protected float x, y;
 	protected ID id;
-	protected float velX, velY;
+	protected int dirX, dirY;
+	protected boolean moveDoneX = false, moveDoneY = false; // is move after change done
 	
 	public GameObject (float x, float y, ID id) {
 		this.x = x;
@@ -37,18 +38,29 @@ public abstract class GameObject {
 	public ID getID () {
 		return id;
 	}
-	public void setVelX (float velX) {
-		this.velX = velX;
+	public void setDirX (int dirX) {
+		this.dirX = dirX;
 	}
-	public void setVelY (float velY) {
-		this.velY = velY;
+	public void setDirY (int dirY) {
+		this.dirY = dirY;
 	}
-	public float getVelX () {
-		return velX;
+	public int getDirX () {
+		return dirX;
 	}
-	public float getVelY () {
-		return velY;
+	public int getDirY () {
+		return dirY;
 	}
-	
+	public void setMoveDoneX(boolean moveDoneX) {
+		this.moveDoneX = moveDoneX;
+	}
+	public boolean getMoveDoneX() {
+		return moveDoneX;
+	}
+	public void setMoveDoneY(boolean moveDoneY) {
+		this.moveDoneY = moveDoneY;
+	}
+	public boolean getMoveDoneY() {
+		return moveDoneY;
+	}
 	
 }

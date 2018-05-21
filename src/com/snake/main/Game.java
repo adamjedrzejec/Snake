@@ -10,7 +10,11 @@ public class Game extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = 2878146351453558385L;
 
-	public static final int WIDTH = 1100, HEIGHT = 720, ROWS = 20, COLUMNS = 20;
+	public static final int WIDTH = 1100, HEIGHT = 720, ROWS = 15;
+	public static final float BLOCK = (float) (0.8 * HEIGHT / ROWS), FOODBLOCK = BLOCK/2, START_XY = (float) (0.1 * HEIGHT + 2 * BLOCK), MIN_XY = (float) (0.1 * HEIGHT) , MAX_XY = (float) (0.1 * HEIGHT + ROWS * BLOCK);
+	
+	public static final int FPS = 120;
+	
 	private Thread thread;
 	private boolean running = false;
 	
@@ -29,9 +33,9 @@ public class Game extends Canvas implements Runnable {
 		spawner = new Spawn(handler, hud);
 		r = new Random();
 		
-		handler.addObject(new Player(40, 100, ID.Player, handler, hud));
+		handler.addObject(new Player(START_XY, START_XY, ID.Player, handler, hud));
 		for(int i = 0; i < 1; i++)
-			handler.addObject(new Food(r.nextInt(Game.HEIGHT - 32), r.nextInt(HEIGHT - 50), ID.Food));
+			handler.addObject(new Food(Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, ID.Food));
 	}
 	
 	public synchronized void start() {
@@ -67,6 +71,11 @@ public class Game extends Canvas implements Runnable {
 			}
 			if (running)
 				render();
+			/*try {
+				Thread.sleep(800/FPS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}*/
 			frames++;
 			
 			if (System.currentTimeMillis() - timer > 1000) {
@@ -98,7 +107,7 @@ public class Game extends Canvas implements Runnable {
 		
 		
 		g.setColor(new Color(103, 205, 77));
-		g.fillRect(40, 40, 10*40, 9*40);
+		g.fillRect((int) (0.1 * Game.HEIGHT), (int) (0.1 * Game.HEIGHT), (int) (0.8 * Game.HEIGHT), (int) (0.8 * Game.HEIGHT));
 		
 		handler.render(g);
 		

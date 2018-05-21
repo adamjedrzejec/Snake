@@ -11,12 +11,12 @@ public class Food extends GameObject {
 	public Food(float x, float y, ID id) {
 		super(x, y, id);
 
-		this.handler = handler;
+		//this.handler = handler;
 		
 	}
 	
 	public Rectangle getBounds() {
-		return new Rectangle((int)x, (int)y, 16, 16);
+		return new Rectangle((int)x, (int)y, (int)Game.FOODBLOCK, (int)Game.FOODBLOCK);
 	}
 
 	public void tick() {
@@ -25,7 +25,7 @@ public class Food extends GameObject {
 
 	public void render(Graphics g) {
 		g.setColor(Color.red);
-		g.fillRect((int)x, (int)y, 16, 16);
+		g.fillRect((int)x, (int)y, (int)Game.FOODBLOCK, (int)Game.FOODBLOCK);
 	}
 
 }
