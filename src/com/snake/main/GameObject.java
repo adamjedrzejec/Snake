@@ -7,8 +7,9 @@ public abstract class GameObject {
 
 	protected float x, y;
 	protected ID id;
-	protected int dirX, dirY;
+	protected int dirX, dirY, futureMoveX, futureMoveY;
 	protected boolean moveDoneX = false, moveDoneY = false; // is move after change done
+	protected int expireCounter;
 	
 	public GameObject (float x, float y, ID id) {
 		this.x = x;
@@ -62,5 +63,19 @@ public abstract class GameObject {
 	public boolean getMoveDoneY() {
 		return moveDoneY;
 	}
-	
+	public int getExpireCounter() {
+		return expireCounter;
+	}
+	public void setFutureMoveX(int futureMoveX) {
+		this.futureMoveX = futureMoveX;
+	}
+	public void setFutureMoveY(int futureMoveY) {
+		this.futureMoveY = futureMoveY;
+	}
+	public int getFutureMoveX() {
+		return futureMoveX;
+	}
+	public int getFutureMoveY() {
+		return futureMoveY;
+	}
 }

@@ -4,5 +4,5 @@ public enum ID {
 
 	Player(),
 	Food(),
-	Trail();
+	Tail();
 }

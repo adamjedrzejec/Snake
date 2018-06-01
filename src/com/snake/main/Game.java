@@ -10,7 +10,7 @@ public class Game extends Canvas implements Runnable {
 
 	private static final long serialVersionUID = 2878146351453558385L;
 
-	public static final int WIDTH = 1100, HEIGHT = 720, ROWS = 15;
+	public static final int WIDTH = 1100, HEIGHT = 720, ROWS = 22;
 	public static final float BLOCK = (float) (0.8 * HEIGHT / ROWS), FOODBLOCK = BLOCK/2, START_XY = (float) (0.1 * HEIGHT + 2 * BLOCK), MIN_XY = (float) (0.1 * HEIGHT) , MAX_XY = (float) (0.1 * HEIGHT + ROWS * BLOCK);
 	
 	public static final int FPS = 120;
@@ -22,20 +22,43 @@ public class Game extends Canvas implements Runnable {
 	private Handler handler;
 	private HUD hud;
 	private Spawn spawner;
+	private Menu menu;
+	
+	public Color backgroundColor = new Color(255,220,60);
+	public Color boardColor = new Color(103, 205, 77);
+	
+	public enum STATE {
+		Menu,
+		HighScores,
+		Game,
+		End
+	}
+	
+	public STATE gameState = STATE.Menu;
 	
 	public Game(){
 		handler = new Handler();
+		hud = new HUD(this, handler);
+		menu = new Menu(this, handler, hud);
+		
 		this.addKeyListener(new KeyInput(handler));
+		this.addMouseListener(menu);
+		this.addMouseListener(hud);
 		
 		new Window(WIDTH, HEIGHT, "Snake", this);
 		
-		hud = new HUD();
+		this.requestFocus();
+		
+		
 		spawner = new Spawn(handler, hud);
 		r = new Random();
 		
-		handler.addObject(new Player(START_XY, START_XY, ID.Player, handler, hud));
-		for(int i = 0; i < 1; i++)
+		if(gameState == STATE.Game) {
+			handler.addObject(new Player(START_XY, START_XY, ID.Player, handler, hud, this));
 			handler.addObject(new Food(Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, ID.Food));
+		}
+		
+		
 	}
 	
 	public synchronized void start() {
@@ -54,9 +77,9 @@ public class Game extends Canvas implements Runnable {
 	}
 	
 	public void run() {
-		this.requestFocus();
+		
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 60.0;
+		double amountOfTicks = 10.0;
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 		long timer = System.currentTimeMillis();
@@ -71,11 +94,6 @@ public class Game extends Canvas implements Runnable {
 			}
 			if (running)
 				render();
-			/*try {
-				Thread.sleep(800/FPS);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}*/
 			frames++;
 			
 			if (System.currentTimeMillis() - timer > 1000) {
@@ -88,9 +106,15 @@ public class Game extends Canvas implements Runnable {
 	}
 	
 	private void tick() {
-		handler.tick();
-		hud.tick();
-		//spawner.tick();
+
+		if(gameState == STATE.Game) {
+			handler.tick();
+			hud.tick();
+			//spawner.tick();
+		}else if(gameState == STATE.Menu || gameState == STATE.End) {
+			menu.tick();
+		}
+
 	}
 	
 	private void render() {
@@ -102,16 +126,23 @@ public class Game extends Canvas implements Runnable {
 		
 		Graphics g = bs.getDrawGraphics();
 		
-		g.setColor(Color.yellow);
+		g.setColor(backgroundColor);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		
-		g.setColor(new Color(103, 205, 77));
-		g.fillRect((int) (0.1 * Game.HEIGHT), (int) (0.1 * Game.HEIGHT), (int) (0.8 * Game.HEIGHT), (int) (0.8 * Game.HEIGHT));
-		
-		handler.render(g);
-		
-		hud.render(g);
+				
+		if(gameState == STATE.Game) {
+			g.setColor(boardColor);
+			g.fillRect((int) (0.1 * Game.HEIGHT), (int) (0.1 * Game.HEIGHT), (int) (0.8 * Game.HEIGHT), (int) (0.8 * Game.HEIGHT));
+			
+			handler.render(g);
+
+			hud.render(g);
+		}else if(gameState == STATE.Menu || gameState == STATE.HighScores || gameState == STATE.End) {
+			menu.render(g);
+		}
+
+
 		
 		g.dispose();
 		bs.show();

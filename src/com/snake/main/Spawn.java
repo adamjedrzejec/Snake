@@ -20,9 +20,9 @@ public class Spawn {
 		
 		if (hud.getNextPerk() >= 100) {
 			scoreKeep = 0;
-			hud.setLevel(hud.getLevel() + 1);
+			hud.setSnakeLength(hud.getSnakeLength() + 1);
 			
-			if (hud.getLevel() == 2) {
+			if (hud.getSnakeLength() == 2) {
 				handler.addObject(new Food(r.nextInt(Game.HEIGHT - 32), r.nextInt(Game.HEIGHT - 50), ID.Food));
 			}
 		}
