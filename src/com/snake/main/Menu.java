@@ -32,7 +32,7 @@ public class Menu extends MouseAdapter {
 			
 			//play button
 			if (mouseOver(mx, my, 380, 250, 300, 64)) {
-				game.gameState = STATE.Game;
+				game.gameState = STATE.ChooseLevel;
 				handler.addObject(new Player(Game.START_XY, Game.START_XY, ID.Player, handler, hud, game));
 				handler.addObject(new Food(Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, ID.Food));
 			
@@ -77,6 +77,31 @@ public class Menu extends MouseAdapter {
 				hud.setSnakeLength(1);
 				
 				return;
+			}
+			
+		}else if(game.gameState == STATE.ChooseLevel) {
+			
+			//choose level easy button
+			if(mouseOver(mx, my, 450, 250, 200, 64)) {
+				game.gameState = STATE.Game;
+				game.amountOfTicks = 8.0;
+			}
+			
+			//choose level medium button
+			if(mouseOver(mx, my, 450, 350, 200, 64)) {
+				game.gameState = STATE.Game;
+				game.amountOfTicks = 12.0;
+			}
+			
+			//choose level hard button
+			if(mouseOver(mx, my, 450, 450, 200, 64)) {
+				game.gameState = STATE.Game;
+				game.amountOfTicks = 16.0;
+			}
+			
+			//choose level back button
+			if(mouseOver(mx, my, 800, 550, 200, 64)) {
+				game.gameState = STATE.Game;
 			}
 			
 		}
@@ -163,6 +188,32 @@ public class Menu extends MouseAdapter {
 			g.setColor(new Color(240, 20, 20));
 			g.setFont(fontNewHighScore);
 			g.drawString("!!! NEW HIGH SCORE !!!", 300, 270);
+			
+		}else if(game.gameState == STATE.ChooseLevel) {
+			
+			Font fnt = new Font("arial", 1, 50);
+			Font fnt2 = new Font("arial", 1, 30);
+			
+			g.setColor(Color.black);
+			g.setFont(fnt);
+			
+			g.drawString("Choose level", 390, 150);
+			
+			g.setFont(fnt2);
+			
+			g.drawRect(450, 250, 200, 64);
+			g.drawString("Easy", 512, 292);
+			
+			g.drawRect(450, 350, 200, 64);
+			g.drawString("Medium", 495, 392);
+			
+			g.drawRect(450, 450, 200, 64);
+			g.drawString("Hard", 512, 492);
+			
+			
+			g.drawRect(800, 550, 200, 64);
+			g.drawString("Back", 860, 592);
+			
 		}
 		
 

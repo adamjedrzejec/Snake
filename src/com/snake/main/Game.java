@@ -13,7 +13,8 @@ public class Game extends Canvas implements Runnable {
 	public static final int WIDTH = 1100, HEIGHT = 720, ROWS = 22;
 	public static final float BLOCK = (float) (0.8 * HEIGHT / ROWS), FOODBLOCK = BLOCK/2, START_XY = (float) (0.1 * HEIGHT + 2 * BLOCK), MIN_XY = (float) (0.1 * HEIGHT) , MAX_XY = (float) (0.1 * HEIGHT + ROWS * BLOCK);
 	
-	public static final int FPS = 120;
+	public double amountOfTicks;
+	//public static final int FPS = 120;
 	
 	private Thread thread;
 	private boolean running = false;
@@ -31,6 +32,7 @@ public class Game extends Canvas implements Runnable {
 		Menu,
 		HighScores,
 		Game,
+		ChooseLevel,
 		End
 	}
 	
@@ -79,12 +81,11 @@ public class Game extends Canvas implements Runnable {
 	public void run() {
 		
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 10.0;
-		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 		while (running) {
+			double ns = 1000000000 / amountOfTicks;
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
@@ -111,7 +112,7 @@ public class Game extends Canvas implements Runnable {
 			handler.tick();
 			hud.tick();
 			//spawner.tick();
-		}else if(gameState == STATE.Menu || gameState == STATE.End) {
+		}else if(gameState == STATE.Menu || gameState == STATE.End || gameState == STATE.ChooseLevel) {
 			menu.tick();
 		}
 
@@ -138,7 +139,7 @@ public class Game extends Canvas implements Runnable {
 			handler.render(g);
 
 			hud.render(g);
-		}else if(gameState == STATE.Menu || gameState == STATE.HighScores || gameState == STATE.End) {
+		}else if(gameState == STATE.Menu || gameState == STATE.HighScores || gameState == STATE.End || gameState == STATE.ChooseLevel) {
 			menu.render(g);
 		}
 
