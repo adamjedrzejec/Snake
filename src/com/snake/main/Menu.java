@@ -5,8 +5,15 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Random;
+import java.util.Scanner;
 
+import com.snake.main.Game.DIFFICULTY;
 import com.snake.main.Game.STATE;
 
 public class Menu extends MouseAdapter {
@@ -60,9 +67,50 @@ public class Menu extends MouseAdapter {
 			
 		}else if(game.gameState == STATE.End) {
 			
+			
+			
 			//game over back to menu button
 			if(mouseOver(mx, my, 275, 500, 230, 64)) {
 				game.gameState = STATE.Menu;
+				
+				int highScore = 0;
+				
+				if(game.gameDifficulty == DIFFICULTY.Easy)
+					highScore = game.easyHighScore;
+				else if(game.gameDifficulty == DIFFICULTY.Medium)
+					highScore = game.mediumHighScore;
+				else if(game.gameDifficulty == DIFFICULTY.Hard)
+					highScore = game.hardHighScore;
+				
+				if(highScore < hud.getScore()) {
+					try {
+						File file = new File("Numbers.txt");
+						PrintWriter output = new PrintWriter(file);
+						
+						
+						if(game.gameDifficulty == DIFFICULTY.Easy) {
+							game.easyHighScore = highScore;
+							output.println(hud.getScore());
+							output.println(game.mediumHighScore);
+							output.println(game.hardHighScore);
+						}else if(game.gameDifficulty == DIFFICULTY.Medium) {
+							game.mediumHighScore = highScore;
+							output.println(game.easyHighScore);
+							output.println(hud.getScore());
+							output.println(game.hardHighScore);
+						}else if(game.gameDifficulty == DIFFICULTY.Hard) {
+							game.hardHighScore = highScore;
+							output.println(game.easyHighScore);
+							output.println(game.mediumHighScore);
+							output.println(hud.getScore());
+						}
+						
+						output.close();
+				    
+					}catch(Exception g) {
+						g.printStackTrace();
+					}
+				}
 				return;
 			}
 			
@@ -72,6 +120,44 @@ public class Menu extends MouseAdapter {
 				
 				handler.addObject(new Player(Game.START_XY, Game.START_XY, ID.Player, handler, hud, game));
 				handler.addObject(new Food(Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, ID.Food));
+				
+				
+				int highScore = 0;
+				
+				if(game.gameDifficulty == DIFFICULTY.Easy)
+					highScore = game.easyHighScore;
+				else if(game.gameDifficulty == DIFFICULTY.Medium)
+					highScore = game.mediumHighScore;
+				else if(game.gameDifficulty == DIFFICULTY.Hard)
+					highScore = game.hardHighScore;
+				
+				if(highScore < hud.getScore()) {
+					try {
+						File file = new File("Numbers.txt");
+						PrintWriter output = new PrintWriter(file);
+						
+						
+						if(game.gameDifficulty == DIFFICULTY.Easy) {
+							output.println(hud.getScore());
+							output.println(game.mediumHighScore);
+							output.println(game.hardHighScore);
+						}else if(game.gameDifficulty == DIFFICULTY.Medium) {
+							output.println(game.easyHighScore);
+							output.println(hud.getScore());
+							output.println(game.hardHighScore);
+						}else if(game.gameDifficulty == DIFFICULTY.Hard) {
+							output.println(game.easyHighScore);
+							output.println(game.mediumHighScore);
+							output.println(hud.getScore());
+						}
+						
+						output.close();
+				    
+					}catch(Exception g) {
+						g.printStackTrace();
+					}
+				}
+				
 				
 				hud.setScore(0);
 				hud.setSnakeLength(1);
@@ -83,20 +169,20 @@ public class Menu extends MouseAdapter {
 			
 			//choose level easy button
 			if(mouseOver(mx, my, 450, 250, 200, 64)) {
+				game.gameDifficulty = DIFFICULTY.Easy;
 				game.gameState = STATE.Game;
-				game.amountOfTicks = 8.0;
 			}
 			
 			//choose level medium button
 			if(mouseOver(mx, my, 450, 350, 200, 64)) {
+				game.gameDifficulty = DIFFICULTY.Medium;
 				game.gameState = STATE.Game;
-				game.amountOfTicks = 12.0;
 			}
 			
 			//choose level hard button
 			if(mouseOver(mx, my, 450, 450, 200, 64)) {
+				game.gameDifficulty = DIFFICULTY.Hard;
 				game.gameState = STATE.Game;
-				game.amountOfTicks = 16.0;
 			}
 			
 			//choose level back button
@@ -167,6 +253,14 @@ public class Menu extends MouseAdapter {
 			Font fnt = new Font("arial", 1, 80);
 			Font fontNewHighScore = new Font("arial", 1, 45);
 			Font fnt2 = new Font("arial", 1, 30);
+			int highScore = 0;
+			
+			if(game.gameDifficulty == DIFFICULTY.Easy)
+				highScore = game.easyHighScore;
+			else if(game.gameDifficulty == DIFFICULTY.Medium)
+				highScore = game.mediumHighScore;
+			else if(game.gameDifficulty == DIFFICULTY.Hard)
+				highScore = game.hardHighScore;
 			
 			g.setColor(Color.black);
 			g.setFont(fnt);
@@ -177,7 +271,7 @@ public class Menu extends MouseAdapter {
 			
 			g.drawString("You lost with a score of: " + hud.getScore(), 350, 340);
 			
-			g.drawString("High score: " + hud.getScore(), 450, 420);
+			g.drawString("High score: " + highScore, 450, 420);
 			
 			g.drawRect(275, 500, 230, 64);
 			g.drawString("Back to menu", 293, 542);
@@ -185,10 +279,11 @@ public class Menu extends MouseAdapter {
 			g.drawRect(575, 500, 230, 64);
 			g.drawString("Try again", 625, 542);
 			
-			g.setColor(new Color(240, 20, 20));
-			g.setFont(fontNewHighScore);
-			g.drawString("!!! NEW HIGH SCORE !!!", 300, 270);
-			
+			if(highScore < hud.getScore()) {
+				g.setColor(new Color(240, 20, 20));
+				g.setFont(fontNewHighScore);
+				g.drawString("!!! NEW HIGH SCORE !!!", 300, 270);
+			}
 		}else if(game.gameState == STATE.ChooseLevel) {
 			
 			Font fnt = new Font("arial", 1, 50);

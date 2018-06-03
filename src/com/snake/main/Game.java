@@ -4,7 +4,12 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Game extends Canvas implements Runnable {
 
@@ -14,7 +19,8 @@ public class Game extends Canvas implements Runnable {
 	public static final float BLOCK = (float) (0.8 * HEIGHT / ROWS), FOODBLOCK = BLOCK/2, START_XY = (float) (0.1 * HEIGHT + 2 * BLOCK), MIN_XY = (float) (0.1 * HEIGHT) , MAX_XY = (float) (0.1 * HEIGHT + ROWS * BLOCK);
 	
 	public double amountOfTicks;
-	//public static final int FPS = 120;
+	
+	public int easyHighScore, mediumHighScore, hardHighScore;
 	
 	private Thread thread;
 	private boolean running = false;
@@ -28,6 +34,14 @@ public class Game extends Canvas implements Runnable {
 	public Color backgroundColor = new Color(255,220,60);
 	public Color boardColor = new Color(103, 205, 77);
 	
+	public enum DIFFICULTY {
+		Easy,
+		Medium,
+		Hard
+	}
+	
+	public DIFFICULTY gameDifficulty = DIFFICULTY.Easy;
+	
 	public enum STATE {
 		Menu,
 		HighScores,
@@ -39,6 +53,31 @@ public class Game extends Canvas implements Runnable {
 	public STATE gameState = STATE.Menu;
 	
 	public Game(){
+		
+		File file = new File("Numbers.txt");
+		
+		if(!file.exists() && !file.isDirectory()) {
+			try {
+				PrintWriter output = new PrintWriter("Numbers.txt");
+				output.println(0);
+				output.println(0);
+				output.println(0);
+				output.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
+		try {
+	        Scanner input = new Scanner(file);
+	        easyHighScore = input.nextInt();
+	    	mediumHighScore = input.nextInt();
+	    	hardHighScore = input.nextInt();
+	        input.close();
+	    }catch(Exception e) {
+	    	e.printStackTrace();
+	    }
+		
 		handler = new Handler();
 		hud = new HUD(this, handler);
 		menu = new Menu(this, handler, hud);
@@ -59,8 +98,6 @@ public class Game extends Canvas implements Runnable {
 			handler.addObject(new Player(START_XY, START_XY, ID.Player, handler, hud, this));
 			handler.addObject(new Food(Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, Game.MIN_XY + Game.BLOCK * r.nextInt(Game.ROWS) + (Game.BLOCK - Game.FOODBLOCK) / 2, ID.Food));
 		}
-		
-		
 	}
 	
 	public synchronized void start() {
@@ -85,6 +122,12 @@ public class Game extends Canvas implements Runnable {
 		long timer = System.currentTimeMillis();
 		int frames = 0;
 		while (running) {
+			if(gameDifficulty == DIFFICULTY.Easy)
+				amountOfTicks = 8.0;
+			else if(gameDifficulty == DIFFICULTY.Medium)
+				amountOfTicks = 12.0;
+			else if(gameDifficulty == DIFFICULTY.Hard)
+				amountOfTicks = 16.0;
 			double ns = 1000000000 / amountOfTicks;
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;

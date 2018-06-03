@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import com.snake.main.Game.DIFFICULTY;
 import com.snake.main.Game.STATE;
 
 public class HUD extends MouseAdapter {
@@ -59,7 +60,13 @@ public class HUD extends MouseAdapter {
 		g.setColor(Color.white);
 		g.fillRect(Game.WIDTH - 290, 100, 210, 50);
 		g.setColor(Color.blue);
-		g.drawString("High score: " + "50", 850, 130);
+		
+		if(game.gameDifficulty == DIFFICULTY.Easy)
+			g.drawString("High score: " + game.easyHighScore, 850, 130);
+		if(game.gameDifficulty == DIFFICULTY.Medium)
+			g.drawString("High score: " + game.mediumHighScore, 850, 130);
+		if(game.gameDifficulty == DIFFICULTY.Hard)
+			g.drawString("High score: " + game.hardHighScore, 850, 130);
 		
 		g.setColor(Color.white);
 		g.fillRect(Game.WIDTH - 290, 200, 210, 50);
