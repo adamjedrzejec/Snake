@@ -89,17 +89,17 @@ public class Menu extends MouseAdapter {
 						
 						
 						if(game.gameDifficulty == DIFFICULTY.Easy) {
-							game.easyHighScore = highScore;
+							game.easyHighScore = hud.getScore();
 							output.println(hud.getScore());
 							output.println(game.mediumHighScore);
 							output.println(game.hardHighScore);
 						}else if(game.gameDifficulty == DIFFICULTY.Medium) {
-							game.mediumHighScore = highScore;
+							game.mediumHighScore = hud.getScore();
 							output.println(game.easyHighScore);
 							output.println(hud.getScore());
 							output.println(game.hardHighScore);
 						}else if(game.gameDifficulty == DIFFICULTY.Hard) {
-							game.hardHighScore = highScore;
+							game.hardHighScore = hud.getScore();
 							output.println(game.easyHighScore);
 							output.println(game.mediumHighScore);
 							output.println(hud.getScore());
@@ -138,14 +138,17 @@ public class Menu extends MouseAdapter {
 						
 						
 						if(game.gameDifficulty == DIFFICULTY.Easy) {
+							game.easyHighScore = hud.getScore();
 							output.println(hud.getScore());
 							output.println(game.mediumHighScore);
 							output.println(game.hardHighScore);
 						}else if(game.gameDifficulty == DIFFICULTY.Medium) {
+							game.mediumHighScore = hud.getScore();
 							output.println(game.easyHighScore);
 							output.println(hud.getScore());
 							output.println(game.hardHighScore);
 						}else if(game.gameDifficulty == DIFFICULTY.Hard) {
+							game.hardHighScore = hud.getScore();
 							output.println(game.easyHighScore);
 							output.println(game.mediumHighScore);
 							output.println(hud.getScore());
@@ -241,9 +244,18 @@ public class Menu extends MouseAdapter {
 			g.setColor(Color.black);
 			g.setFont(fnt);
 			
-			g.drawString("High Scores", 420, 150);
+			g.drawString("High Scores", 385, 150);
 			
 			g.setFont(fnt2);
+			
+			g.drawRect(380, 250, 300, 64);
+			g.drawString("Easy:  " + game.easyHighScore, 470, 290);
+			
+			g.drawRect(380, 350, 300, 64);
+			g.drawString("Medium:  " + game.mediumHighScore, 430, 390);
+			
+			g.drawRect(380, 450, 300, 64);
+			g.drawString("Hard:  " + game.hardHighScore, 470, 490);
 			
 			g.drawRect(800, 550, 200, 64);
 			g.drawString("Back", 860, 592);
